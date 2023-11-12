@@ -112,8 +112,6 @@ def get_region(region_identifier: str) -> list[int]:
 
 
 async def test_email_phone_combo(session: tls_client, data_schema: dict[str, str | None], phone_number: str) -> dict[str, str | bool] | None:
-    await asyncio.sleep(random.randint(0, 10) / 10.0)
-
     data_schema['phoneNumber'] = f'+1{phone_number}'
 
     response = session.post('https://identity.doordash.com/v2/auth/guided/email', data=json.dumps(data_schema))
@@ -122,8 +120,6 @@ async def test_email_phone_combo(session: tls_client, data_schema: dict[str, str
         return None
 
     if response.status_code == 429 or 'userInfo' not in response.text:
-        print(response.text)
-
         return {'ratelimited': True, 'phoneNumber': phone_number}
 
     return response.json()['userInfo']
@@ -173,4 +169,3 @@ def lambda_handler(event, context):
         'statusCode': 200,
         'body': json.dumps(result),
     }
-
